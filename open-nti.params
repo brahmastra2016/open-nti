@@ -51,6 +51,12 @@ export LOCAL_PORT_NGINX=80
 export LOCAL_PORT_SSH=22222
 export LOCAL_PORT_OC=50051
 
+## IP address for External Service that will be redirected from the Open NTI
+## Startup will fail if some ports are already in use
+export INFLUXDB_ADDR=10.13.80.35
+export KAFKA_ADDR=10.13.80.35
+
+
 ## Local directories that will be mapped into the container
 export LOCAL_DIR_DATA=data
 export LOCAL_DIR_LOG=logs

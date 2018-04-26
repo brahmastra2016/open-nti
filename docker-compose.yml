@@ -6,36 +6,13 @@ input-jti:
    - "INFLUXDB_ADDR=opennti"
    - "OUTPUT_INFLUXDB=true"
    - "OUTPUT_STDOUT=false"
+   - "OUTPUT_KAFKA=true"
+   - "KAFKA_ADDR=localhost"
+   - "KAFKA_PORT=9092"
+   - "KAFKA_TOPIC=jnpr.jvision"
   ports:
    - "$LOCAL_PORT_JTI:50000/udp"
    - "$LOCAL_PORT_ANALYTICSD:50020/udp"
-  volumes:
-   - /etc/localtime:/etc/localtime
-  links:
-    - opennti
-
-input-syslog:
-  image: $INPUT_SYSLOG_IMAGE_NAME:$IMAGE_TAG
-  container_name: $INPUT_SYSLOG_CONTAINER_NAME
-  environment:
-   - "INFLUXDB_ADDR=opennti"
-   - "OUTPUT_INFLUXDB=true"
-   - "OUTPUT_STDOUT=false"
-  ports:
-   - "$LOCAL_PORT_EVENT:6000/udp"
-  volumes:
-   - /etc/localtime:/etc/localtime
-  links:
-    - opennti
-
-input-snmp:
-#  image: $INPUT_SNMP_IMAGE_NAME:$IMAGE_TAG
-  build: $INPUT_SNMP_DIR
-  container_name: $INPUT_SNMP_CONTAINER_NAME
-  volumes:
-    - /etc/localtime:/etc/localtime:ro
-  ports:
-   - "$LOCAL_PORT_SNMP:162/udp"
   links:
     - opennti
 
@@ -44,7 +21,7 @@ input-oc:
   build: $INPUT_OC_DIR
   container_name: $INPUT_OC_CONTAINER_NAME
   volumes:
-    - /etc/localtime:/etc/localtime:ro
+    - ./$INPUT_OC_DIR/start-input-oc.sh:/source/start-input-oc.sh
     - ./$INPUT_OC_DIR/telegraf.tmpl:/source/telegraf.tmpl
   ports:
     - "$LOCAL_PORT_OC:50051/udp"
@@ -60,7 +37,7 @@ input-internal:
     - "HOST_SYS=/rootfs/sys"
     - "HOST_ETC=/rootfs/etc"
   volumes:
-    - /etc/localtime:/etc/localtime:ro
+#    - /etc/localtime:/etc/localtime:ro
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - /sys:/rootfs/sys:ro
     - /proc:/rootfs/proc:ro
@@ -79,7 +56,6 @@ opennti:
   volumes:
    - ./$LOCAL_DIR_DASHBOARD:/src/dashboards
    - ./$LOCAL_DIR_DATA:/opt/open-nti/data
-   - /etc/localtime:/etc/localtime
   ports:
    - "$LOCAL_PORT_STATSD:8125/udp"
    - "$LOCAL_PORT_NGINX:80"

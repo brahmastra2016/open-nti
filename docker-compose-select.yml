@@ -1,0 +1,28 @@
+
+input-jti:
+  image: $INPUT_JTI_IMAGE_NAME:$IMAGE_TAG
+  container_name: $INPUT_JTI_CONTAINER_NAME
+  environment:
+   - "INFLUXDB_ADDR=$INFLUXDB_ADDR"
+   - "OUTPUT_INFLUXDB=true"
+   - "OUTPUT_STDOUT=false"
+   - "OUTPUT_KAFKA=true"
+   - "KAFKA_ADDR=$KAFKA_ADDR"
+   - "KAFKA_PORT=9092"
+   - "KAFKA_TOPIC=jnpr.jvision"
+  ports:
+   - "$LOCAL_PORT_JTI:50000/udp"
+   - "$LOCAL_PORT_ANALYTICSD:50020/udp"
+
+input-oc:
+#  image: $INPUT_OC_IMAGE_NAME:$IMAGE_TAG
+  build: $INPUT_OC_DIR
+  container_name: $INPUT_OC_CONTAINER_NAME
+  environment:
+   - "INFLUXDB_ADDR=$INFLUXDB_ADDR"
+   - "KAFKA_ADDR=$KAFKA_ADDR"   
+  volumes:
+    - ./$INPUT_OC_DIR/:/source/
+
+  ports:
+    - "$LOCAL_PORT_OC:50051/udp"

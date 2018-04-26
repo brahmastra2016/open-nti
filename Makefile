@@ -11,6 +11,7 @@ TEST_TAG=unittest
 PWD = $(shell pwd)
 VAR_FILE ?= open-nti.params
 DOCKER_FILE = docker-compose.yml
+DOCKER_FILE_SELECT = docker-compose-select.yml
 DOCKER_FILE_P = docker-compose-persistent.yml
 TIME ?= 1m
 TAG ?= all
@@ -75,10 +76,14 @@ test-run:
 cli:
 	docker exec -i -t $(MAIN_CONTAINER_NAME) /bin/bash
 
-start:
+start-all:
 	@echo "Use docker compose file: $(DOCKER_FILE)"
 	$(RUN_OPTIONS) docker-compose -f $(DOCKER_FILE) up -d
 
+start-select:
+	@echo "Use docker compose file: $(DOCKER_FILE_SELECT)"
+	$(RUN_OPTIONS) docker-compose -f $(DOCKER_FILE_SELECT) up -d
+		
 start-persistent:
 	@echo "Use docker compose file: $(DOCKER_FILE_P)"
 	$(RUN_OPTIONS) docker-compose -f $(DOCKER_FILE_P) up -d
